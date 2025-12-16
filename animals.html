@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASSAD - Zoo Virtuel de la CAN 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js" defer></script>
+    <style>
+        /* Personnalisation simple pour l'effet de survol du Lion */
+        .lion-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold text-orange-500">
+                🦁 ASSAD - Zoo Virtuel
+            </div>
+            <div class="space-x-4 hidden md:flex">
+                <a href="index.html" class="text-gray-600 hover:text-orange-700 transition duration-300">Accueil</a>
+                <a href=""
+                    class="text-orange-600 font-semibold hover:text-orange-700 transition duration-300">Animaux</a>
+                <a href="" class="text-gray-600 hover:text-orange-700 transition duration-300">Visites</a>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="btn-login"
+                    class="bg-transparent border border-orange-700 text-orange-700 px-4 py-2 rounded-lg hover:bg-orange-50 transition duration-300">
+                    Connexion
+                </button>
+                <button id="btn-register"
+                    class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-800 transition duration-300">
+                    Inscription
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="mb-16 p-4">
+        <h2 class="text-3xl font-bold text-orange-500 mb-8 border-b-2 border-orange-600 pb-2">🌍 Explorer les Animaux
+            Africains</h2>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+
+                <div class="relative flex-grow">
+                    <input type="text" id="search-animal" placeholder="Rechercher par nom ou espèce..."
+                        class="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                <select id="filter-habitat" class="p-3 border border-gray-300 rounded-lg bg-white w-full md:w-auto">
+                    <option value="">Filtrer par Habitat</option>
+                    <option value="foret">Forêt Tropicale</option>
+                    <option value="savane">Savane</option>
+                    <option value="desert">Désert</option>
+                    <option value="aquatique">Aquatique</option>
+                </select>
+
+                <select id="filter-country" class="p-3 border border-gray-300 rounded-lg bg-white w-full md:w-auto">
+                    <option value="">Filtrer par Pays Africain</option>
+                    <option value="maroc">Maroc</option>
+                    <option value="kenya">Kenya</option>
+                    <option value="afrique_du_sud">Afrique du Sud</option>
+                </select>
+
+                <button id="btn-apply-filter"
+                    class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition duration-300 w-full md:w-auto">
+                    Appliquer
+                </button>
+            </div>
+        </div>
+
+        <div id="animal-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+            <div
+                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
+                <img src="images/lion.jpg" alt="Lion de l'Atlas"
+                    class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900">Lion de l'Atlas</h3>
+                    <p class="text-sm text-gray-600">Espèce: *Panthera leo leo*</p>
+                    <div class="mt-2 text-xs font-semibold">
+                        <span
+                            class="inline-block bg-orange-200 text-orange-800 rounded-full px-3 py-1 mr-2">Maroc</span>
+                        <span class="inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1">Savane</span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
+                <img src="images/Elephant.jpg" alt="Éléphant d'Afrique"
+                    class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900">Éléphant d'Afrique</h3>
+                    <p class="text-sm text-gray-600">Espèce: *Loxodonta africana*</p>
+                    <div class="mt-2 text-xs font-semibold">
+                        <span class="inline-block bg-green-200 text-green-800 rounded-full px-3 py-1 mr-2">Kenya</span>
+                        <span class="inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1">Savane</span>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div
+                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
+                <img src="images/" alt="Hippopotame"
+                    class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900">Hippopotame</h3>
+                    <p class="text-sm text-gray-600">Espèce: *Hippopotamus amphibius*</p>
+                    <div class="mt-2 text-xs font-semibold">
+                        <span class="inline-block bg-green-200 text-green-800 rounded-full px-3 py-1 mr-2">Afrique du
+                            Sud</span>
+                        <span class="inline-block bg-blue-200 text-blue-800 rounded-full px-3 py-1">Aquatique</span>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div
+                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
+                <img src="images/" alt="Guépard"
+                    class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-gray-900">Guépard</h3>
+                    <p class="text-sm text-gray-600">Espèce: *Acinonyx jubatus*</p>
+                    <div class="mt-2 text-xs font-semibold">
+                        <span
+                            class="inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1 mr-2">Égypte</span>
+                        <span class="inline-block bg-gray-300 text-gray-800 rounded-full px-3 py-1">Désert</span>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+
+</html>
