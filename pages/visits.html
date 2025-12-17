@@ -223,7 +223,7 @@
         </div>
     </div>
 
-    <div id="create-tour-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 items-center justify-center z-50">
+    <div id="create-tour-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 items-center justify-center hidden z-50">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-xl">
             <h3 class="text-2xl font-bold text-orange-700 mb-4" id="tour-modal-title">Créer une Nouvelle Visite Guidée</h3>
             
@@ -232,12 +232,6 @@
                     <label for="tour-titre" class="block text-gray-700 text-sm font-bold mb-2">Titre de la Visite</label>
                     <input type="text" id="tour-titre" placeholder="Ex: Safari dans la Savane Kenyane" maxlength="100"
                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-
-                <div class="mb-4">
-                    <label for="tour-description" class="block text-gray-700 text-sm font-bold mb-2">Description (Optionnel)</label>
-                    <textarea id="tour-description" placeholder="Courte description du parcours..." rows="3"
-                              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -261,7 +255,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
-                        <label for="tour-capacite" class="block text-gray-700 text-sm font-bold mb-2">Capacité Max. (Visiteurs)</label>
+                        <label for="tour-capacite" class="block text-gray-700 text-sm font-bold mb-2">Capacité Max</label>
                         <input type="number" id="tour-capacite" min="5" max="100" value="30"
                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                     </div>

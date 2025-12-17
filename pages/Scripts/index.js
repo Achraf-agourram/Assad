@@ -26,3 +26,19 @@ btnRegister.addEventListener('click', () => openModal('register'));
 toggleAuth.addEventListener('click', () => {
     openModal(isLoginMode ? 'register' : 'login');
 });
+
+function openAsaadModal() {
+    const modal = document.getElementById('modal-asaad');
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAsaadModal() {
+    const modal = document.getElementById('modal-asaad');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAsaadModal();
+});
