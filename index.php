@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="pages/Scripts/index.js" defer></script>
     <style>
-        /* Personnalisation simple pour l'effet de survol du Lion */
         .lion-card:hover {
             transform: scale(1.03);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -16,26 +15,7 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="text-2xl font-bold text-orange-500">
-                🦁 ASSAD - Zoo Virtuel
-            </div>
-            <div class="space-x-4 hidden md:flex">
-                <a href="#" class="text-orange-600 font-semibold hover:text-orange-700 transition duration-300">Accueil</a>
-                <a href="pages/animals.html" class="text-gray-600 hover:text-orange-700 transition duration-300">Animaux</a>
-                <a href="pages/visits.html" class="text-gray-600 hover:text-orange-700 transition duration-300">Visites</a>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button id="btn-login" class="bg-transparent border border-orange-700 text-orange-700 px-4 py-2 rounded-lg hover:bg-orange-50 transition duration-300">
-                    Connexion
-                </button>
-                <button id="btn-register" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-800 transition duration-300">
-                    Inscription
-                </button>
-            </div>
-        </nav>
-    </header>
+    <?php include("pages/header.php") ?>
 
     <main class="container mx-auto px-6 py-12">
         
@@ -80,22 +60,43 @@
     <div id="auth-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
             <h3 id="modal-title" class="text-2xl font-bold text-gray-800 mb-4">Connexion</h3>
-            <form id="auth-form">
+            <form class="hidden" id="login-form">
                 <div class="mb-4">
-                    <label for="nom" class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
-                    <input type="text" id="nom" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                    <input type="email" id="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
                 <div class="mb-6">
-                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-                    <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
+                    <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                        Valider
+                    </button>
+                    <button type="button" onclick="closeModal()" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800">
+                        Annuler
+                    </button>
+                </div>
+                <p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
+            </form>
+
+            <form class="hidden" id="register-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
+                    <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
+                    <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
                 <div id="role-field" class="mb-6 hidden">
-                    <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Je suis</label>
-                    <select id="role" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Je suis</label>
+                    <select class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500">
                         <option value="VISITEUR">Visiteur</option>
                         <option value="GUIDE">Guide (Soumis à approbation)</option>
                     </select>
