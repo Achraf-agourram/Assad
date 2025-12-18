@@ -6,8 +6,12 @@ const roleField = document.getElementById('role-field');
 const toggleAuth = document.getElementById('toggle-auth');
 const registerForm = document.getElementById('register-form');
 const loginForm = document.getElementById('login-form');
+const notification = document.getElementById('notification');
 let isLoginMode = true;
 
+setTimeout(() => {
+    notification.style.display = 'none';
+}, 2000);
 function openModal(mode) {
     isLoginMode = (mode === 'login');
     modalTitle.textContent = isLoginMode ? 'Connexion' : 'Inscription';
@@ -29,9 +33,9 @@ function closeModal() {
 btnLogin.addEventListener('click', () => openModal('login'));
 btnRegister.addEventListener('click', () => openModal('register'));
 
-toggleAuth.addEventListener('click', () => {
+/*toggleAuth.addEventListener('click', () => {
     openModal(isLoginMode ? 'register' : 'login');
-});
+});*/
 
 function openAsaadModal() {
     const modal = document.getElementById('modal-asaad');

@@ -1,7 +1,15 @@
 <?php
+include("database.php");
+
 if(isset($_POST['login'])){
-    
+    $user = get_data("SELECT * FROM utilisateurs WHERE email = ? AND motpasse_hash = ?;", "ss", [$_POST['loginEmail'], $_POST['loginPassword']]);
+    if($user){
+        
+    }else{
+        echo '<div id="notification" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;background-color: #f44336;z-index: 100;">❌ Please enter valid informations!</div>';
+    }
 }
+$database->close();
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +24,10 @@ if(isset($_POST['login'])){
         .lion-card:hover {
             transform: scale(1.03);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -66,18 +78,18 @@ if(isset($_POST['login'])){
     <div id="auth-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
             <h3 id="modal-title" class="text-2xl font-bold text-gray-800 mb-4">Connexion</h3>
-            <form class="hidden" id="login-form" method="Post">
+            <form class="hidden" id="login-form" method="POST">
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                    <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                    <input type="email" name="loginEmail" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-                    <input type="password" name="login" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                    <input type="password" name="loginPassword" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
                 
                 <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                    <button type="submit" name="login" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
                         Valider
                     </button>
                     <button type="button" onclick="closeModal()" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800">

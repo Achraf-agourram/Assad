@@ -19,8 +19,6 @@ function get_data($command, $param, $values){
 
     return extract_rows($result);
 }
-// $data = get_data("SELECT nom, role FROM utilisateurs WHERE email = ?;", "s", ["admin@gmail.com"]);
-// print_r($data);
 
-$database->close();
+//$database->close();
 ?>
