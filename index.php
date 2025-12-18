@@ -1,3 +1,9 @@
+<?php
+if(isset($_POST['login'])){
+    
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -60,14 +66,14 @@
     <div id="auth-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
             <h3 id="modal-title" class="text-2xl font-bold text-gray-800 mb-4">Connexion</h3>
-            <form class="hidden" id="login-form">
+            <form class="hidden" id="login-form" method="Post">
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
                     <input type="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
                 <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-                    <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                    <input type="password" name="login" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
                 
                 <div class="flex items-center justify-between">
@@ -78,7 +84,7 @@
                         Annuler
                     </button>
                 </div>
-                <p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
+                <!--p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p-->
             </form>
 
             <form class="hidden" id="register-form">
@@ -110,7 +116,7 @@
                         Annuler
                     </button>
                 </div>
-                <p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
+                <!--p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p-->
             </form>
         </div>
     </div>
