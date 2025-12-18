@@ -2,9 +2,9 @@
 include("database.php");
 
 if(isset($_POST['login'])){
-    $user = get_data("SELECT * FROM utilisateurs WHERE email = ? AND motpasse_hash = ?;", "ss", [$_POST['loginEmail'], $_POST['loginPassword']]);
+    $user = extract_rows(request("SELECT * FROM utilisateurs WHERE email = ? AND motpasse_hash = ?;", "ss", [$_POST['loginEmail'], $_POST['loginPassword']]));
     if($user){
-        
+        echo '<div id="notification" class="bg-orange-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Connected successfully</div>';
     }else{
         echo '<div id="notification" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;background-color: #f44336;z-index: 100;">❌ Please enter valid informations!</div>';
     }
@@ -33,7 +33,7 @@ $database->close();
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <?php include("pages/header.php") ?>
+    <?php include("pages/header.php")?>
 
     <main class="container mx-auto px-6 py-12">
         
@@ -96,7 +96,7 @@ $database->close();
                         Annuler
                     </button>
                 </div>
-                <!--p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p-->
+                <p class="toggle-auth text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
             </form>
 
             <form class="hidden" id="register-form">
@@ -112,7 +112,7 @@ $database->close();
                     <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
                     <input type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                 </div>
-                <div id="role-field" class="mb-6 hidden">
+                <div class="mb-6">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Je suis</label>
                     <select class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500">
                         <option value="VISITEUR">Visiteur</option>
@@ -128,7 +128,7 @@ $database->close();
                         Annuler
                     </button>
                 </div>
-                <!--p id="toggle-auth" class="text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p-->
+                <p class="toggle-auth text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
             </form>
         </div>
     </div>

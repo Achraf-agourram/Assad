@@ -2,24 +2,26 @@ const authModal = document.getElementById('auth-modal');
 const btnLogin = document.getElementById('btn-login');
 const btnRegister = document.getElementById('btn-register');
 const modalTitle = document.getElementById('modal-title');
-const roleField = document.getElementById('role-field');
-const toggleAuth = document.getElementById('toggle-auth');
+const toggleAuth = document.getElementsByClassName('toggle-auth');
 const registerForm = document.getElementById('register-form');
 const loginForm = document.getElementById('login-form');
 const notification = document.getElementById('notification');
-let isLoginMode = true;
+var isLoginMode;
+
 
 setTimeout(() => {
-    notification.style.display = 'none';
+    try {
+        notification.style.display = 'none';
+    } catch { }
 }, 2000);
+
+
 function openModal(mode) {
     isLoginMode = (mode === 'login');
     modalTitle.textContent = isLoginMode ? 'Connexion' : 'Inscription';
-    roleField.classList.toggle('hidden', isLoginMode);
-    //toggleAuth.textContent = isLoginMode ? "Pas encore de compte ? S'inscrire" : "Déjà un compte ? Se connecter";
+    toggleAuth.textContent = isLoginMode ? "Pas encore de compte ? S'inscrire" : "Déjà un compte ? Se connecter";
     authModal.classList.remove('hidden');
-    if(isLoginMode){loginForm.classList.remove('hidden');}else{registerForm.classList.remove('hidden');}
-    
+    if (isLoginMode) { loginForm.classList.remove('hidden'); } else { registerForm.classList.remove('hidden'); }
     authModal.classList.add('flex');
 }
 
@@ -33,9 +35,14 @@ function closeModal() {
 btnLogin.addEventListener('click', () => openModal('login'));
 btnRegister.addEventListener('click', () => openModal('register'));
 
-/*toggleAuth.addEventListener('click', () => {
-    openModal(isLoginMode ? 'register' : 'login');
-});*/
+for (let btn of toggleAuth) {
+    btn.addEventListener('click', () => {
+        loginForm.classList.add('hidden');
+        registerForm.classList.add('hidden');
+        authModal.classList.remove('flex');
+        openModal(isLoginMode ? 'register' : 'login');
+    });
+}
 
 function openAsaadModal() {
     const modal = document.getElementById('modal-asaad');

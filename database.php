@@ -9,7 +9,7 @@ function extract_rows($table){
     return $rowsArray;
 }
 
-function get_data($command, $param, $values){
+function request($command, $param, $values){
     global $database;
     $pre = $database->prepare($command);
     $pre->bind_param($param, ...$values);
@@ -17,7 +17,7 @@ function get_data($command, $param, $values){
     $result = $pre->get_result();
     $pre->close();
 
-    return extract_rows($result);
+    return $result;
 }
 
 //$database->close();
