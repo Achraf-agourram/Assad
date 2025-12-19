@@ -13,8 +13,12 @@ session_start();
 include("../database.php");
 function show_admin_page(){
     $usersTotal = extract_rows(request("SELECT COUNT(*) as total FROM `utilisateurs` WHERE role != 'admin';", null, null))[0]['total'];
-    $guideAttente = extract_rows(request("SELECT COUNT(*) as attente FROM `utilisateurs` WHERE role = 'guide' AND !role_approuve;", null, null))[0]['attente'];
-    $actifAccounts = extract_rows(request("SELECT COUNT(*) as actifAccounts FROM `utilisateurs` WHERE statut_compte AND role != 'admin';", null, null))[0]['actifAccounts'];
+    $guideAttenteTotal = extract_rows(request("SELECT COUNT(*) as attente FROM `utilisateurs` WHERE role = 'guide' AND !role_approuve;", null, null))[0]['attente'];
+    $actifAccountsTotal = extract_rows(request("SELECT COUNT(*) as actifAccounts FROM `utilisateurs` WHERE statut_compte AND role != 'admin';", null, null))[0]['actifAccounts'];
+
+    $guideAttenteList = extract_rows(request("SELECT nom, email, role, statut_compte, role_approuve FROM `utilisateurs` WHERE role='guide' AND !role_approuve;", null, null));
+    $actifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte, role_approuve FROM utilisateurs WHERE statut_compte AND (role != 'guide' OR (role = 'guide' AND role_approuve)) AND role != 'admin';", null, null));
+    $inactifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte, role_approuve FROM utilisateurs WHERE !statut_compte;", null, null));
 
     echo '
         <body class="bg-gray-100 font-sans">
@@ -48,11 +52,11 @@ function show_admin_page(){
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                             <p class="text-sm text-orange-500 font-medium uppercase">Guides en attente</p>
-                            <p class="text-3xl font-bold text-gray-900">'. $guideAttente . '</p>
+                            <p class="text-3xl font-bold text-gray-900">'. $guideAttenteTotal . '</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                             <p class="text-sm text-green-500 font-medium uppercase">Comptes Actifs</p>
-                            <p class="text-3xl font-bold text-gray-900">'. $actifAccounts . '</p>
+                            <p class="text-3xl font-bold text-gray-900">'. $actifAccountsTotal . '</p>
                         </div>
                     </div>
 
@@ -93,8 +97,8 @@ function show_admin_page(){
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex space-x-2">
-                                                <button onclick="approveGuide(1, "Youssef")" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition">Approuver</button>
-                                                <button onclick="toggleUserStatus(1, "désactiver")" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition">Désactiver</button>
+                                                <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition">Approuver</button>
+                                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition">Désactiver</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -114,7 +118,7 @@ function show_admin_page(){
                                         </td>
                                         <td class="px-6 py-4 text-gray-400 text-xs italic">N/A</td>
                                         <td class="px-6 py-4">
-                                            <button onclick="toggleUserStatus(2, "désactiver")" class="text-red-500 hover:text-red-700 text-sm font-semibold">Désactiver le compte</button>
+                                            <button class="text-red-500 hover:text-red-700 text-sm font-semibold">Désactiver le compte</button>
                                         </td>
                                     </tr>
 
@@ -133,7 +137,7 @@ function show_admin_page(){
                                         </td>
                                         <td class="px-6 py-4 text-gray-400 text-xs italic">N/A</td>
                                         <td class="px-6 py-4">
-                                            <button onclick="toggleUserStatus(3, "activer")" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-bold transition">Réactiver</button>
+                                            <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-bold transition">Réactiver</button>
                                         </td>
                                     </tr>
 
@@ -177,7 +181,7 @@ function show_unavailable_page(){
                             </svg>
                             Retourner à l accueil
                         </a>
-                        <button onclick="window.history.back()" class="bg-white text-orange-600 border-2 border-orange-600 font-bold px-8 py-4 rounded-full hover:bg-orange-50 transition shadow-sm">
+                        <button="bg-white text-orange-600 border-2 border-orange-600 font-bold px-8 py-4 rounded-full hover:bg-orange-50 transition shadow-sm">
                             Page précédente
                         </button>
                     </div>
