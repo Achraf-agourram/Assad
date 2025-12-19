@@ -21,10 +21,7 @@ if(isset($_POST['logout'])){
     $_SESSION['loggedAccount'] = null;
 }
 
-//$connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]));
-
-
-$database->close();
+//  $connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]));
 ?>
 
 <!DOCTYPE html>
@@ -208,6 +205,6 @@ $database->close();
             </div>
         </div>
     </div>
-
 </body>
 </html>
+<?php $database->close(); ?>
