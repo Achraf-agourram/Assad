@@ -15,15 +15,15 @@ include("../database.php");
 
 function show_admin_page(){
     $statutDict = [0 => 'Désactivé', 1 => 'Activé'];
-    $approuveDict = [0 => 'EN ATTENTE', 1 => 'N/A'];
+    $approuveDict = ['guide' => [0 => 'EN ATTENTE', 1 => 'N/A'], 'visiteur' => [0 => 'N/A', 1 => 'N/A']];
     
     $usersTotal = extract_rows(request("SELECT COUNT(*) as total FROM `utilisateurs` WHERE role != 'admin';", null, null))[0]['total'];
     $guideAttenteTotal = extract_rows(request("SELECT COUNT(*) as attente FROM `utilisateurs` WHERE role = 'guide' AND !role_approuve;", null, null))[0]['attente'];
     $actifAccountsTotal = extract_rows(request("SELECT COUNT(*) as actifAccounts FROM `utilisateurs` WHERE statut_compte AND role != 'admin';", null, null))[0]['actifAccounts'];
 
-    $guidesAttenteList = extract_rows(request("SELECT nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE role='guide' AND !role_approuve;", null, null));
-    $actifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE statut_compte AND (role != 'guide' OR (role = 'guide' AND role_approuve)) AND role != 'admin';", null, null));
-    $inactifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE !statut_compte;", null, null));
+    $guidesAttenteList = extract_rows(request("SELECT id, nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE role='guide' AND !role_approuve;", null, null));
+    $actifAccountsList = extract_rows(request("SELECT id, nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE statut_compte AND (role != 'guide' OR (role = 'guide' AND role_approuve)) AND role != 'admin';", null, null));
+    $inactifAccountsList = extract_rows(request("SELECT id, nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE !statut_compte;", null, null));
 
     echo '
         <body class="bg-gray-100 font-sans">
@@ -101,13 +101,36 @@ function show_admin_page(){
                     </span>
                 </td>
                 <td class='px-6 py-4'>
-                    <span class='px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold'>{$approuveDict[$guide['approuve']]}</span>
+                    <span class='px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold'>{$approuveDict[$guide['role']][$guide['approuve']]}</span>
                 </td>
                 <td class='px-6 py-4'>
                     <div class='flex space-x-2'>
-                        <button class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition'>Approuver</button>
-                        <button class='bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition'>Désactiver</button>
+                        <button value='{$guide['id']}' class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition'>Approuver</button>
+                        <button value='{$guide['id']}' class='bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition'>Désactiver</button>
                     </div>
+                </td>
+            </tr>
+        ";
+    }
+
+    foreach($actifAccountsList as $guide){
+        echo"
+            <tr class='hover:bg-gray-50 transition'>
+                <td class='px-6 py-4'>
+                    <div class='font-bold text-gray-900'>{$guide['nom']}</div>
+                    <div class='text-sm text-gray-500'>{$guide['email']}</div>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold'>{$guide['role']}</span>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='flex items-center text-green-600 text-sm'>
+                        <span class='h-2 w-2 bg-green-600 rounded-full mr-2'></span> {$statutDict[$guide['statut']]}
+                    </span>
+                </td>
+                <td class='px-6 py-4 text-gray-400 text-xs italic'>{$approuveDict[$guide['role']][$guide['approuve']]}</td>
+                <td class='px-6 py-4'>
+                    <button value='{$guide['id']}' class='text-red-500 hover:text-red-700 text-sm font-semibold'>Désactiver le compte</button>
                 </td>
             </tr>
         ";
