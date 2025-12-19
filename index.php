@@ -1,12 +1,15 @@
 <?php
 include("database.php");
+$connectedUser = null;
+session_start();
 
 if(isset($_POST['login'])){
     $user = extract_rows(request("SELECT * FROM utilisateurs WHERE email = ? AND motpasse_hash = ?;", "ss", [$_POST['loginEmail'], $_POST['loginPassword']]));
+    $_SESSION['loggedAccount'] = $user[0]['id'];
     if($user){
         echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Connected successfully</div>';
     }else{
-        echo '<div id="notification" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;background-color: #f44336;z-index: 100;">❌ Please enter valid informations!</div>';
+        echo '<div id="notification" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;background-color: #f44336;z-index: 100;">❌ Cet utilisateur n existe pas!</div>';
     }
 }
 if(isset($_POST['register'])){
@@ -14,6 +17,13 @@ if(isset($_POST['register'])){
     request("INSERT INTO utilisateurs (nom, email, motpasse_hash, pays, role) VALUES (?, ?, ?, ?, ?);", "sssss", $data);
     echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Account registred successfully</div>';
 }
+if(isset($_POST['logout'])){
+    $_SESSION['loggedAccount'] = null;
+}
+
+//$connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]));
+
+
 $database->close();
 ?>
 
