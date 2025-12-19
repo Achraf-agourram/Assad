@@ -11,14 +11,19 @@
 <?php
 session_start();
 include("../database.php");
+
+
 function show_admin_page(){
+    $statutDict = [0 => 'Désactivé', 1 => 'Activé'];
+    $approuveDict = [0 => 'EN ATTENTE', 1 => 'N/A'];
+    
     $usersTotal = extract_rows(request("SELECT COUNT(*) as total FROM `utilisateurs` WHERE role != 'admin';", null, null))[0]['total'];
     $guideAttenteTotal = extract_rows(request("SELECT COUNT(*) as attente FROM `utilisateurs` WHERE role = 'guide' AND !role_approuve;", null, null))[0]['attente'];
     $actifAccountsTotal = extract_rows(request("SELECT COUNT(*) as actifAccounts FROM `utilisateurs` WHERE statut_compte AND role != 'admin';", null, null))[0]['actifAccounts'];
 
-    $guideAttenteList = extract_rows(request("SELECT nom, email, role, statut_compte, role_approuve FROM `utilisateurs` WHERE role='guide' AND !role_approuve;", null, null));
-    $actifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte, role_approuve FROM utilisateurs WHERE statut_compte AND (role != 'guide' OR (role = 'guide' AND role_approuve)) AND role != 'admin';", null, null));
-    $inactifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte, role_approuve FROM utilisateurs WHERE !statut_compte;", null, null));
+    $guidesAttenteList = extract_rows(request("SELECT nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE role='guide' AND !role_approuve;", null, null));
+    $actifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE statut_compte AND (role != 'guide' OR (role = 'guide' AND role_approuve)) AND role != 'admin';", null, null));
+    $inactifAccountsList = extract_rows(request("SELECT nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE !statut_compte;", null, null));
 
     echo '
         <body class="bg-gray-100 font-sans">
@@ -78,69 +83,36 @@ function show_admin_page(){
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
-                                    
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-gray-900">Youssef El Amrani</div>
-                                            <div class="text-sm text-gray-500">youssef@example.com</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">GUIDE</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="flex items-center text-green-600 text-sm">
-                                                <span class="h-2 w-2 bg-green-600 rounded-full mr-2"></span> Actif
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">EN ATTENTE</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex space-x-2">
-                                                <button class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition">Approuver</button>
-                                                <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition">Désactiver</button>
-                                            </div>
-                                        </td>
-                                    </tr>
+        ';
 
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-gray-900">Sarah Smith</div>
-                                            <div class="text-sm text-gray-500">sarah.s@web.com</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">VISITEUR</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="flex items-center text-green-600 text-sm">
-                                                <span class="h-2 w-2 bg-green-600 rounded-full mr-2"></span> Actif
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-400 text-xs italic">N/A</td>
-                                        <td class="px-6 py-4">
-                                            <button class="text-red-500 hover:text-red-700 text-sm font-semibold">Désactiver le compte</button>
-                                        </td>
-                                    </tr>
-
-                                    <tr class="hover:bg-gray-50 transition bg-red-50">
-                                        <td class="px-6 py-4">
-                                            <div class="font-bold text-gray-900">John Doe</div>
-                                            <div class="text-sm text-gray-500">john@spam.com</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">VISITEUR</span>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <span class="flex items-center text-red-600 text-sm">
-                                                <span class="h-2 w-2 bg-red-600 rounded-full mr-2"></span> Inactif
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 text-gray-400 text-xs italic">N/A</td>
-                                        <td class="px-6 py-4">
-                                            <button class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-bold transition">Réactiver</button>
-                                        </td>
-                                    </tr>
-
+    foreach($guidesAttenteList as $guide){
+        echo"
+            <tr class='hover:bg-gray-50 transition'>
+                <td class='px-6 py-4'>
+                    <div class='font-bold text-gray-900'>{$guide['nom']}</div>
+                    <div class='text-sm text-gray-500'>{$guide['email']}</div>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold'>{$guide['role']}</span>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='flex items-center text-green-600 text-sm'>
+                        <span class='h-2 w-2 bg-green-600 rounded-full mr-2'></span> {$statutDict[$guide['statut']]}
+                    </span>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold'>{$approuveDict[$guide['approuve']]}</span>
+                </td>
+                <td class='px-6 py-4'>
+                    <div class='flex space-x-2'>
+                        <button class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition'>Approuver</button>
+                        <button class='bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition'>Désactiver</button>
+                    </div>
+                </td>
+            </tr>
+        ";
+    }
+    echo '
                                 </tbody>
                             </table>
                         </div>
@@ -149,7 +121,6 @@ function show_admin_page(){
             </div>
             
         </body>
-
         </html>
     ';
 }
