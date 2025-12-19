@@ -12,7 +12,7 @@ function extract_rows($table){
 function request($command, $param, $values){
     global $database;
     $pre = $database->prepare($command);
-    $pre->bind_param($param, ...$values);
+    if($param && $values) $pre->bind_param($param, ...$values);
     $pre->execute();
     $result = $pre->get_result();
     $pre->close();

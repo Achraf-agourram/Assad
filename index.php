@@ -65,7 +65,7 @@ if(isset($_POST['logout'])){
             </div>
         </section>
 
-        <section id="visites" class="mb-16">
+        <!--section id="visites" class="mb-16">
             <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b-2 border-orange-600 pb-2">📅 Nos Prochaines Visites Virtuelles</h2>
             
             <div id="tour-list" class="space-y-6">
@@ -84,7 +84,7 @@ if(isset($_POST['logout'])){
                     </div>
                 </div>
                 </div>
-        </section>
+        </section-->
     </main>
 
     <div id="auth-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">

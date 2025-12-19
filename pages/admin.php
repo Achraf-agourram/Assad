@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-        <html lang="fr">
+    <html lang="fr">
 
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Admin</title>
-            <script src="https://cdn.tailwindcss.com"></script>
-        </head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
 
 <?php
 session_start();
 include("../database.php");
 function show_admin_page(){
+    $usersTotal = extract_rows(request("SELECT COUNT(*) as total FROM `utilisateurs` WHERE role != 'admin';", null, null))[0]['total'];
+    $guideAttente = extract_rows(request("SELECT COUNT(*) as attente FROM `utilisateurs` WHERE role = 'guide' AND !role_approuve;", null, null))[0]['attente'];
+    $actifAccounts = extract_rows(request("SELECT COUNT(*) as actifAccounts FROM `utilisateurs` WHERE statut_compte AND role != 'admin';", null, null))[0]['actifAccounts'];
+
     echo '
-        
         <body class="bg-gray-100 font-sans">
 
             <div class="flex min-h-screen">
@@ -41,15 +44,15 @@ function show_admin_page(){
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                             <p class="text-sm text-gray-500 font-medium uppercase">Total Utilisateurs</p>
-                            <p class="text-3xl font-bold text-gray-900">3</p>
+                            <p class="text-3xl font-bold text-gray-900">'. $usersTotal . '</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                             <p class="text-sm text-orange-500 font-medium uppercase">Guides en attente</p>
-                            <p class="text-3xl font-bold text-gray-900">1</p>
+                            <p class="text-3xl font-bold text-gray-900">'. $guideAttente . '</p>
                         </div>
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                             <p class="text-sm text-green-500 font-medium uppercase">Comptes Actifs</p>
-                            <p class="text-3xl font-bold text-gray-900">2</p>
+                            <p class="text-3xl font-bold text-gray-900">'. $actifAccounts . '</p>
                         </div>
                     </div>
 
