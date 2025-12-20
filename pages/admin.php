@@ -71,7 +71,7 @@ function show_admin_page(){
                             <input type="text" placeholder="Rechercher un email ou nom..." class="p-2 border border-gray-300 rounded-lg w-full md:w-64 focus:ring-orange-500 focus:border-orange-500">
                         </div>
                         
-                        <div class="overflow-x-auto">
+                        <form method="POST" class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead class="bg-gray-50 text-gray-600 uppercase text-xs font-bold">
                                     <tr>
@@ -105,32 +105,53 @@ function show_admin_page(){
                 </td>
                 <td class='px-6 py-4'>
                     <div class='flex space-x-2'>
-                        <button value='{$guide['id']}' class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition'>Approuver</button>
-                        <button value='{$guide['id']}' class='bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition'>Désactiver</button>
+                        <button value='{$guide['id']}' name='approuve' class='bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-bold transition'>Approuver</button>
+                        <button value='{$guide['id']}' name='desactive' class='bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-xs font-bold transition'>Désactiver</button>
                     </div>
                 </td>
             </tr>
         ";
     }
-
-    foreach($actifAccountsList as $guide){
+    foreach($actifAccountsList as $account){
         echo"
             <tr class='hover:bg-gray-50 transition'>
                 <td class='px-6 py-4'>
-                    <div class='font-bold text-gray-900'>{$guide['nom']}</div>
-                    <div class='text-sm text-gray-500'>{$guide['email']}</div>
+                    <div class='font-bold text-gray-900'>{$account['nom']}</div>
+                    <div class='text-sm text-gray-500'>{$account['email']}</div>
                 </td>
                 <td class='px-6 py-4'>
-                    <span class='px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold'>{$guide['role']}</span>
+                    <span class='px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold'>{$account['role']}</span>
                 </td>
                 <td class='px-6 py-4'>
                     <span class='flex items-center text-green-600 text-sm'>
-                        <span class='h-2 w-2 bg-green-600 rounded-full mr-2'></span> {$statutDict[$guide['statut']]}
+                        <span class='h-2 w-2 bg-green-600 rounded-full mr-2'></span> {$statutDict[$account['statut']]}
                     </span>
                 </td>
-                <td class='px-6 py-4 text-gray-400 text-xs italic'>{$approuveDict[$guide['role']][$guide['approuve']]}</td>
+                <td class='px-6 py-4 text-gray-400 text-xs italic'>{$approuveDict[$account['role']][$account['approuve']]}</td>
                 <td class='px-6 py-4'>
-                    <button value='{$guide['id']}' class='text-red-500 hover:text-red-700 text-sm font-semibold'>Désactiver le compte</button>
+                    <button value='{$account['id']}' name='desactive' class='text-red-500 hover:text-red-700 text-sm font-semibold'>Désactiver le compte</button>
+                </td>
+            </tr>
+        ";
+    }
+    foreach($inactifAccountsList as $account){
+        echo"
+            <tr class='hover:bg-gray-50 transition bg-red-50'>
+                <td class='px-6 py-4'>
+                    <div class='font-bold text-gray-900'>{$account['nom']}</div>
+                    <div class='text-sm text-gray-500'>{$account['email']}</div>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold'>{$account['role']}</span>
+                </td>
+                <td class='px-6 py-4'>
+                    <span class='flex items-center text-red-600 text-sm'>
+                        <span class='h-2 w-2 bg-red-600 rounded-full mr-2'></span> {$statutDict[$account['statut']]}
+                    </span>
+                </td>
+                <td class='px-6 py-4 text-gray-400 text-xs italic'>N/A</td>
+                <td class='px-6 py-4'>
+                    <button value='{$account['id']}' name='reactive' class='bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-xs font-bold transition'>Réactiver</button>
                 </td>
             </tr>
         ";
@@ -138,60 +159,82 @@ function show_admin_page(){
     echo '
                                 </tbody>
                             </table>
-                        </div>
+                        </form>
                     </div>
                 </main>
             </div>
-            
+        <script>
+            setTimeout(() => {
+                try {
+                    notification.style.display = "none";
+                } catch { }
+            }, 2000);
+        </script>
         </body>
         </html>
     ';
 }
 function show_unavailable_page(){
     echo '
-            <main class="flex-grow flex items-center justify-center px-6 py-12">
-                <div class="text-center max-w-2xl">
-                    
-                    <div class="relative mb-8 flex justify-center">
-                        <h1 class="text-[150px] md:text-[200px] font-black text-orange-200 leading-none select-none">
-                            404
-                        </h1>
-                        <div class="absolute inset-0 flex items-center justify-center floating">
-                            <span class="text-8xl">🦁</span>
+            <body class="bg-gray-100 font-sans">
+                <main class="flex-grow flex items-center justify-center px-6 py-12">
+                    <div class="text-center max-w-2xl">
+                        
+                        <div class="relative mb-8 flex justify-center">
+                            <h1 class="text-[150px] md:text-[200px] font-black text-orange-200 leading-none select-none">
+                                404
+                            </h1>
+                            <div class="absolute inset-0 flex items-center justify-center floating">
+                                <span class="text-8xl">🦁</span>
+                            </div>
+                        </div>
+
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">
+                            Oups ! Vous vous êtes égaré dans la savane...
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                            Même le Lion de l Atlas ne trouve pas cette trace. Il semble que la page que vous cherchez n existe pas ou a été déplacée vers un autre chemin.
+                        </p>
+
+                        <div class="flex flex-col sm:flex-row justify-center gap-4">
+                            <a href="../index.php" class="bg-orange-600 text-white font-bold px-8 py-4 rounded-full hover:bg-orange-700 transition shadow-lg flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Retourner à l accueil
+                            </a>
+                            <button onclick="window.history.back()" class="bg-white text-orange-600 border-2 border-orange-600 font-bold px-8 py-4 rounded-full hover:bg-orange-50 transition shadow-sm">
+                                Page précédente
+                            </button>
                         </div>
                     </div>
-
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">
-                        Oups ! Vous vous êtes égaré dans la savane...
-                    </h2>
-                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                        Même le Lion de l Atlas ne trouve pas cette trace. Il semble que la page que vous cherchez n existe pas ou a été déplacée vers un autre habitat.
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="../index.php" class="bg-orange-600 text-white font-bold px-8 py-4 rounded-full hover:bg-orange-700 transition shadow-lg flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                            </svg>
-                            Retourner à l accueil
-                        </a>
-                        <button="bg-white text-orange-600 border-2 border-orange-600 font-bold px-8 py-4 rounded-full hover:bg-orange-50 transition shadow-sm">
-                            Page précédente
-                        </button>
-                    </div>
-                </div>
-            </main>
-        </html>
+                </main>
+            </body>
+            </html>
     ';
+}
+function actions(){
+    if(isset($_POST['approuve'])){
+        request("");
+        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 45%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Ce guide a été approuvé</div>';
+    }
+    if(isset($_POST['desactive'])){
+        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 45%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Ce compte a été désactivé</div>';
+    }
+    if(isset($_POST['reactive'])){
+        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 45%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Ce compte a été réactivé</div>';
+    }    
 }
 
 if(isset($_SESSION['loggedAccount'])){
-    $connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]));
-    if($connectedUser[0]['role'] == 'admin'){
+    $connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]))[0];
+    if($connectedUser['role'] == 'admin'){
+        actions();
         show_admin_page();
     }else{show_unavailable_page();}
 }
 else{
     show_unavailable_page();
 }
+
 ?>
