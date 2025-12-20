@@ -215,13 +215,15 @@ function show_unavailable_page(){
 }
 function actions(){
     if(isset($_POST['approuve'])){
-        request("");
+        request("UPDATE `utilisateurs` SET role_approuve = 1 WHERE id = ?;", "i", [$_POST['approuve']]);
         echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 45%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Ce guide a été approuvé</div>';
     }
     if(isset($_POST['desactive'])){
+        request("UPDATE `utilisateurs` SET statut_compte = 0 WHERE id = ?;", "i", [$_POST['desactive']]);
         echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 45%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Ce compte a été désactivé</div>';
     }
     if(isset($_POST['reactive'])){
+        request("UPDATE `utilisateurs` SET statut_compte = 1 WHERE id = ?;", "i", [$_POST['reactive']]);
         echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 45%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Ce compte a été réactivé</div>';
     }    
 }
