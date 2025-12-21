@@ -1,5 +1,6 @@
 <?php
 include("database.php");
+include("pages/header.php");
 $connectedUser = null;
 session_start();
 
@@ -25,27 +26,10 @@ if(isset($_POST['logout'])){
 
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASSAD - Zoo Virtuel de la CAN 2025</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="pages/Scripts/index.js" defer></script>
-    <style>
-        .lion-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
-</head>
+<?php head("ASSAD-Zoo Virtuel de la CAN 2025", "pages/Scripts/index.js"); ?>
+
 <body class="bg-gray-100 font-sans">
-
-    <?php include("pages/header.php")?>
-
+    <?php navbar(); ?>
     <main class="container mx-auto px-6 py-12">
         
         <section id="lion-atlas" class="mb-16 bg-orange-100 p-8 rounded-xl shadow-lg flex flex-col md:flex-row items-center justify-between lion-card transition duration-500">

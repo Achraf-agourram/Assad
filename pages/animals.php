@@ -1,21 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASSAD - Zoo Virtuel de la CAN 2025</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="script.js" defer></script>
-    <style>
-        /* Personnalisation simple pour l'effet de survol du Lion */
-        .lion-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-    </style>
-</head>
-
 <body class="bg-gray-100 font-sans">
 
     <header class="bg-white shadow-md sticky top-0 z-50">
