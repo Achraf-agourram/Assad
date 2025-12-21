@@ -1,15 +1,15 @@
 <?php
+session_start();
 include("../database.php");
 include("header.php");
 $connectedUser = null;
-session_start();
 $animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysorigine, descriptioncourte, nb_consultations, habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null))
 ?>
 
 
 <!DOCTYPE html>
 <html lang="fr">
-<?php head("Animaux", ""); ?>
+<?php head("Animaux", "Scripts/index.js"); ?>
 
 <body class="bg-gray-100 font-sans">
     <?php navbar(['../index.php', 'animals.php', 'visits.php', '../admin/users.php'], 'animals'); ?>

@@ -1,26 +1,8 @@
 <?php
+session_start();
 include("database.php");
 include("pages/header.php");
 $connectedUser = null;
-session_start();
-
-if(isset($_POST['login'])){
-    $user = extract_rows(request("SELECT * FROM utilisateurs WHERE email = ? AND motpasse_hash = ?;", "ss", [$_POST['loginEmail'], $_POST['loginPassword']]));
-    $_SESSION['loggedAccount'] = $user[0]['id'];
-    if($user){
-        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Connected successfully</div>';
-    }else{
-        echo '<div id="notification" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;background-color: #f44336;z-index: 100;">❌ Cet utilisateur n existe pas!</div>';
-    }
-}
-if(isset($_POST['register'])){
-    $data = [$_POST['registerName'], $_POST['registerEmail'], $_POST['registerPassword'], $_POST['registerCountry'], $_POST['registerRole']];
-    request("INSERT INTO utilisateurs (nom, email, motpasse_hash, pays, role) VALUES (?, ?, ?, ?, ?);", "sssss", $data);
-    echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Account registred successfully</div>';
-}
-if(isset($_POST['logout'])){
-    $_SESSION['loggedAccount'] = null;
-}
 
 ?>
 
@@ -69,68 +51,6 @@ if(isset($_POST['logout'])){
                 </div>
         </section-->
     </main>
-
-    <div id="auth-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-            <h3 id="modal-title" class="text-2xl font-bold text-gray-800 mb-4">Connexion</h3>
-            <form class="hidden" id="login-form" method="POST">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                    <input type="email" name="loginEmail" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-                    <input type="password" name="loginPassword" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <button type="submit" name="login" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-                        Valider
-                    </button>
-                    <button type="button" onclick="closeModal()" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800">
-                        Annuler
-                    </button>
-                </div>
-                <p class="toggle-auth text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
-            </form>
-
-            <form class="hidden" id="register-form" method="POST">
-                <div class="mb-2">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
-                    <input type="text" name="registerName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                <div class="mb-2">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                    <input type="email" name="registerEmail" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                <div class="mb-2">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-                    <input type="password" name="registerPassword" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                <div class="mb-2">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Pays</label>
-                    <input type="text" name="registerCountry" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Je suis</label>
-                    <select name="registerRole" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500">
-                        <option value="visiteur">Visiteur</option>
-                        <option value="guide">Guide (Soumis à approbation)</option>
-                    </select>
-                </div>
-                
-                <div class="flex items-center justify-between">
-                    <button type="submit" name="register" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-                        Valider
-                    </button>
-                    <button type="button" onclick="closeModal()" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800">
-                        Annuler
-                    </button>
-                </div>
-                <p class="toggle-auth text-center text-sm mt-4 cursor-pointer text-blue-500 hover:text-blue-700">Pas encore de compte ? S'inscrire</p>
-            </form>
-        </div>
-    </div>
     
     <div id="modal-asaad" class="fixed inset-0 z-[100] hidden overflow-y-auto">
         <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity" onclick="closeAsaadModal()"></div>
