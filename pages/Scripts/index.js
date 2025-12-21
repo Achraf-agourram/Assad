@@ -19,7 +19,7 @@ setTimeout(() => {
 function openModal(mode) {
     isLoginMode = (mode === 'login');
     modalTitle.textContent = isLoginMode ? 'Connexion' : 'Inscription';
-    toggleAuth.textContent = isLoginMode ? "Pas encore de compte ? S'inscrire" : "Déjà un compte ? Se connecter";
+    for(let t of toggleAuth) t.textContent = isLoginMode ? "Pas encore de compte ? S'inscrire" : "Déjà un compte ? Se connecter";
     authModal.classList.remove('hidden');
     if (isLoginMode) { loginForm.classList.remove('hidden'); } else { registerForm.classList.remove('hidden'); }
     authModal.classList.add('flex');
@@ -55,7 +55,3 @@ function closeAsaadModal() {
     modal.classList.add('hidden');
     document.body.style.overflow = 'auto';
 }
-
-window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeAsaadModal();
-});

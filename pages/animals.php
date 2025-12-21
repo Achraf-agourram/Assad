@@ -20,17 +20,7 @@ $animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysor
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
             <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
 
-                <div class="relative flex-grow">
-                    <input type="text" id="search-animal" placeholder="Rechercher par nom ou espèce..."
-                        class="w-full p-3 pl-10 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
-                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
-
-                <select id="filter-habitat" class="p-3 border border-gray-300 rounded-lg bg-white w-full md:w-auto">
+                <select class="p-3 border border-gray-300 rounded-lg bg-white w-full">
                     <option value="">Filtrer par Habitat</option>
                     <option value="foret">Forêt Tropicale</option>
                     <option value="savane">Savane</option>
@@ -38,7 +28,7 @@ $animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysor
                     <option value="aquatique">Aquatique</option>
                 </select>
 
-                <select id="filter-country" class="p-3 border border-gray-300 rounded-lg bg-white w-full md:w-auto">
+                <select class="p-3 border border-gray-300 rounded-lg bg-white w-full">
                     <option value="">Filtrer par Pays Africain</option>
                     <option value="maroc">Maroc</option>
                     <option value="kenya">Kenya</option>

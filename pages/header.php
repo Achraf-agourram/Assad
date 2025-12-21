@@ -1,4 +1,6 @@
 <?php
+    $paysCAN = ['Maroc','Sénégal','Égypte','Algérie','Tunisie','Nigeria','Ghana','Cameroun','Côte d’Ivoire','Mali','Burkina Faso','Afrique du Sud','RD Congo','Zambie','Guinée','Guinée équatoriale','Cap-Vert','Angola','Mozambique','Namibie','Tanzanie','Ouganda','Bénin','Gabon'];
+
     function head($title, $script){
         echo "
         <head>
@@ -133,7 +135,11 @@
             </div>
             <div class="mb-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Pays</label>
-                <input type="text" name="registerCountry" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                <select name="registerCountry" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
+                    <?php
+                        foreach($paysCAN as $pays) echo "<option value='$pays'>$pays</option>";
+                    ?>
+                </select>
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Je suis</label>
