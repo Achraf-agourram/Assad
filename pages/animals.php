@@ -3,7 +3,15 @@ session_start();
 include("../database.php");
 include("header.php");
 $connectedUser = null;
-$animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysorigine, descriptioncourte, nb_consultations, habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null))
+$animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysorigine, descriptioncourte, nb_consultations, habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null));
+$habitatsToFilter = extract_rows(request("SELECT DISTINCT habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null));
+$countriesToFilter = extract_rows(request("SELECT DISTINCT paysorigine FROM `animaux`;", null, null));
+
+if(isset($_GET['filter'])){
+    $habitat = $_GET['habitats-to-filter'] ?: null;
+    $country = $_GET['countries-to-filter'] ?: null;
+    $animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysorigine, descriptioncourte, nb_consultations, habitats.h_name FROM animaux JOIN habitats ON animaux.id_habitat = habitats.id WHERE (habitats.h_name = ? OR ? IS NULL) AND (paysorigine = ? OR ? IS NULL);", "ssss", [$habitat, $habitat, $country, $country]));
+}
 ?>
 
 
@@ -17,30 +25,33 @@ $animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysor
         <h2 class="text-3xl font-bold text-orange-500 mb-8 border-b-2 border-orange-600 pb-2">🌍 Explorer les Animaux
             Africains</h2>
 
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <form method="GET" class="bg-white p-6 rounded-lg shadow-md mb-8">
             <div class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
 
-                <select class="p-3 border border-gray-300 rounded-lg bg-white w-full">
-                    <option value="">Filtrer par Habitat</option>
-                    <option value="foret">Forêt Tropicale</option>
-                    <option value="savane">Savane</option>
-                    <option value="desert">Désert</option>
-                    <option value="aquatique">Aquatique</option>
+                <select name="habitats-to-filter" class="p-3 border border-gray-300 rounded-lg bg-white w-full">
+                    <option value="">Tous les Habitats</option>
+                    <?php
+                        foreach($habitatsToFilter as $habitat){
+                            echo "<option value='{$habitat['h_name']}'>{$habitat['h_name']}</option>";
+                        }
+                    ?>
                 </select>
 
-                <select class="p-3 border border-gray-300 rounded-lg bg-white w-full">
-                    <option value="">Filtrer par Pays Africain</option>
-                    <option value="maroc">Maroc</option>
-                    <option value="kenya">Kenya</option>
-                    <option value="afrique_du_sud">Afrique du Sud</option>
+                <select name="countries-to-filter" class="p-3 border border-gray-300 rounded-lg bg-white w-full">
+                    <option value="">Tous les Pays Africaines</option>
+                    <?php
+                        foreach($countriesToFilter as $country){
+                            echo "<option value='{$country['paysorigine']}'>{$country['paysorigine']}</option>";
+                        }
+                    ?>
                 </select>
 
-                <button id="btn-apply-filter"
+                <button name="filter"
                     class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition duration-300 w-full md:w-auto">
                     Appliquer
                 </button>
             </div>
-        </div>
+        </form>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
