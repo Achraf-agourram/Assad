@@ -1,22 +1,17 @@
+<?php
+include("../database.php");
+include("header.php");
+$connectedUser = null;
+session_start();
+?>
+
+
 <!DOCTYPE html>
 <html lang="fr">
+<?php head("Animaux", ""); ?>
 
 <body class="bg-gray-100 font-sans">
-
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="text-2xl font-bold text-orange-500">
-                🦁 ASSAD - Zoo Virtuel
-            </div>
-            <div class="space-x-4 hidden md:flex">
-                <a href="index.html" class="text-gray-600 hover:text-orange-700 transition duration-300">Accueil</a>
-                <a href=""
-                    class="text-orange-600 font-semibold hover:text-orange-700 transition duration-300">Animaux</a>
-                <a href="visits.html" class="text-gray-600 hover:text-orange-700 transition duration-300">Visites</a>
-            </div>
-        </nav>
-    </header>
-
+    <?php navbar(['../index.php', 'animals.php', 'visits.php', '../admin/users.php'], 'animals'); ?>
     <main class="mb-16 p-4">
         <h2 class="text-3xl font-bold text-orange-500 mb-8 border-b-2 border-orange-600 pb-2">🌍 Explorer les Animaux
             Africains</h2>

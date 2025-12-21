@@ -20,7 +20,8 @@
         </head>
         ";
     }
-    function navbar($links){
+    function navbar($links, $page){
+        $linksDict = ['home' => ['text-orange-600 font-semibold', 'text-gray-600', 'text-gray-600'], 'animals' => ['text-gray-600', 'text-orange-600 font-semibold', 'text-gray-600'], 'visits' => ['text-gray-600', 'text-gray-600', 'text-orange-600 font-semibold']];
         echo "
         <header class='bg-white shadow-md sticky top-0 z-50'>
         <nav class='container mx-auto px-6 py-3 flex justify-between items-center'>
@@ -28,14 +29,14 @@
                 🦁 ASSAD - Zoo Virtuel
             </div>
             <div class='space-x-4 hidden md:flex'>
-                <a href='{$links[0]}' class='text-orange-600 font-semibold hover:text-orange-700 transition duration-300'>Accueil</a>
-                <a href='{$links[1]}' class='text-gray-600 hover:text-orange-700 transition duration-300'>Animaux</a>
+                <a href='{$links[0]}' class='{$linksDict[$page][0]} hover:text-orange-700 transition duration-300'>Accueil</a>
+                <a href='{$links[1]}' class='{$linksDict[$page][1]} hover:text-orange-700 transition duration-300'>Animaux</a>
                 
         ";
 
         if(isset($_SESSION['loggedAccount'])){
             echo "
-                <a href='{$links[2]}' class='text-gray-600 hover:text-orange-700 transition duration-300'>Visites</a>
+                <a href='{$links[2]}' class='{$linksDict[$page][2]} hover:text-orange-700 transition duration-300'>Visites</a>
             </div>
             <div class='flex items-center space-x-2'>
             ";

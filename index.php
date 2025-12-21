@@ -29,7 +29,7 @@ if(isset($_POST['logout'])){
 <?php head("ASSAD-Zoo Virtuel de la CAN 2025", "pages/Scripts/index.js"); ?>
 
 <body class="bg-gray-100 font-sans">
-    <?php navbar(['index.php', 'pages/animals.php', 'pages/visits.php', 'admin/users.php']); ?>
+    <?php navbar(['index.php', 'pages/animals.php', 'pages/visits.php', 'admin/users.php'], 'home'); ?>
     <main class="container mx-auto px-6 py-12">
         
         <section id="lion-atlas" class="mb-16 bg-orange-100 p-8 rounded-xl shadow-lg flex flex-col md:flex-row items-center justify-between lion-card transition duration-500">
