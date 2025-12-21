@@ -3,6 +3,7 @@ include("../database.php");
 include("header.php");
 $connectedUser = null;
 session_start();
+$animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysorigine, descriptioncourte, nb_consultations, habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null))
 ?>
 
 
@@ -51,69 +52,27 @@ session_start();
             </div>
         </div>
 
-        <div id="animal-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
 
-            <div
-                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
-                <img src="images/lion.jpg" alt="Lion de l'Atlas"
-                    class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-xl font-bold text-gray-900">Lion de l'Atlas</h3>
-                    <p class="text-sm text-gray-600">Espèce: *Panthera leo leo*</p>
-                    <div class="mt-2 text-xs font-semibold">
-                        <span
-                            class="inline-block bg-orange-200 text-orange-800 rounded-full px-3 py-1 mr-2">Maroc</span>
-                        <span class="inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1">Savane</span>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
-                <img src="images/Elephant.jpg" alt="Éléphant d'Afrique"
-                    class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-xl font-bold text-gray-900">Éléphant d'Afrique</h3>
-                    <p class="text-sm text-gray-600">Espèce: *Loxodonta africana*</p>
-                    <div class="mt-2 text-xs font-semibold">
-                        <span class="inline-block bg-green-200 text-green-800 rounded-full px-3 py-1 mr-2">Kenya</span>
-                        <span class="inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1">Savane</span>
-                    </div>
-                    
-                </div>
-            </div>
-
-            <div
-                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
-                <img src="images/" alt="Hippopotame"
-                    class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-xl font-bold text-gray-900">Hippopotame</h3>
-                    <p class="text-sm text-gray-600">Espèce: *Hippopotamus amphibius*</p>
-                    <div class="mt-2 text-xs font-semibold">
-                        <span class="inline-block bg-green-200 text-green-800 rounded-full px-3 py-1 mr-2">Afrique du
-                            Sud</span>
-                        <span class="inline-block bg-blue-200 text-blue-800 rounded-full px-3 py-1">Aquatique</span>
-                    </div>
-                    
-                </div>
-            </div>
-
-            <div
-                class="animal-card bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out">
-                <img src="images/" alt="Guépard"
-                    class="w-full h-48 object-cover">
-                <div class="p-4">
-                    <h3 class="text-xl font-bold text-gray-900">Guépard</h3>
-                    <p class="text-sm text-gray-600">Espèce: *Acinonyx jubatus*</p>
-                    <div class="mt-2 text-xs font-semibold">
-                        <span
-                            class="inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1 mr-2">Égypte</span>
-                        <span class="inline-block bg-gray-300 text-gray-800 rounded-full px-3 py-1">Désert</span>
-                    </div>
-                    
-                </div>
-            </div>
+            <?php
+                foreach($animals as $animal){
+                    echo "
+                        <div title='{$animal['descriptioncourte']}' class='bg-white rounded-xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition duration-300 ease-in-out'>
+                            <img src='../images/{$animal['image']}' alt='{$animal['nom']}'
+                                class='w-full h-48 object-cover'>
+                            <div class='p-4'>
+                                <h3 class='text-xl font-bold text-gray-900'>{$animal['nom']}</h3>
+                                <p class='text-sm text-gray-600'>Espèce: *{$animal['espece']}*</p>
+                                <div class='mt-2 text-xs font-semibold'>
+                                    <span
+                                        class='inline-block bg-orange-200 text-orange-800 rounded-full px-3 py-1 mr-2'>{$animal['paysorigine']}</span>
+                                    <span class='inline-block bg-yellow-200 text-yellow-800 rounded-full px-3 py-1'>{$animal['h_name']}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ";
+                }
+            ?>
 
         </div>
     </main>
