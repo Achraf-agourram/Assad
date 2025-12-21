@@ -15,7 +15,7 @@
                         $connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]));
                         if($connectedUser[0]['role'] == 'admin'){
                             echo "
-                                <a href='pages/admin.php' name='admin' class='bg-transparent border border-orange-700 text-orange-700 px-4 py-2 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300'>
+                                <a href='admin/users.php' name='admin' class='bg-transparent border border-orange-700 text-orange-700 px-4 py-2 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300'>
                                     Admin
                                 </a>
                             ";

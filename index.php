@@ -21,7 +21,6 @@ if(isset($_POST['logout'])){
     $_SESSION['loggedAccount'] = null;
 }
 
-//  $connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]));
 ?>
 
 <!DOCTYPE html>
