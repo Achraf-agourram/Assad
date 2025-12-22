@@ -1,37 +1,15 @@
+<?php
+session_start();
+include("../database.php");
+include("header.php");
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASSAD - Zoo Virtuel de la CAN 2025</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="Scripts/visits.js" defer></script>
-    <style>
-        /* Personnalisation simple pour l'effet de survol du Lion */
-        .lion-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-    </style>
-</head>
+<?php head("visites", "Scripts/visits.js"); ?>
 
 <body class="bg-gray-100 font-sans">
-
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="text-2xl font-bold text-orange-500">
-                🦁 ASSAD - Zoo Virtuel
-            </div>
-            <div class="space-x-4 hidden md:flex">
-                <a href="index.html" class="text-gray-600 hover:text-orange-700 transition duration-300">Accueil</a>
-                <a href="animals.html"
-                    class="text-gray-600 font-semibold hover:text-orange-700 transition duration-300">Animaux</a>
-                <a href="" class="text-orange-600 hover:text-orange-700 transition duration-300">Visites</a>
-            </div>
-        </nav>
-    </header>
-
+    <?php navbar(['../index.php', 'animals.php', 'visits.php', '../admin/users.php'], 'visits'); ?>
     <main class="container mx-auto px-6 py-12">
 
         <h1 class="text-4xl font-extrabold text-gray-800 mb-4">Parcours Éducatifs et Visites Virtuelles</h1>
