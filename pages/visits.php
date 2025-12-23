@@ -2,6 +2,12 @@
 session_start();
 include("../database.php");
 include("header.php");
+
+$availableVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE NOT EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure >= NOW();", "i", [$_SESSION['loggedAccount']]));
+$reservedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure >= NOW();", "i", [$_SESSION['loggedAccount']]));
+$reservedOutDatedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE NOT (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure <= NOW();", "i", [$_SESSION['loggedAccount']]));
+$outdatedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE NOT EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure <= NOW();", "i", [$_SESSION['loggedAccount']]));
+
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +16,7 @@ include("header.php");
 
 <body class="bg-gray-100 font-sans">
     <?php navbar(['../index.php', 'animals.php', 'visits.php', '../admin/users.php'], 'visits'); ?>
-    <main class="container mx-auto px-6 py-12">
+    <main class="mx-auto px-6 py-12">
 
         <h1 class="text-4xl font-extrabold text-gray-800 mb-4">Parcours Éducatifs et Visites Virtuelles</h1>
         <p class="text-xl text-gray-600 mb-12">Réservez votre place pour une exploration guidée et interactive de la
@@ -19,86 +25,121 @@ include("header.php");
         <section class="mb-12 bg-white p-6 rounded-xl shadow-lg">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <input type="text" id="search-tour" placeholder="Rechercher par titre ou guide..."
+                <input type="text" id="search-tour" placeholder="Rechercher par titre du visite..."
                     class="md:col-span-2 p-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500">
 
-                <select id="filter-language" class="p-3 border border-gray-300 rounded-lg bg-white">
-                    <option value="">Toutes les Langues</option>
-                    <option value="fr">Français</option>
-                    <option value="en">Anglais</option>
-                    <option value="ar">Arabe</option>
-                </select>
+                <button name="search" class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition duration-300 w-full md:w-auto">
+                    Rehercher
+                </button>
             </div>
         </section>
 
         <section id="tour-list" class="space-y-6">
             <div class="flex justify-between">
                 <h2 class="text-3xl font-bold text-gray-800">Prochaines Visites</h2>
-                <button class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-500 transition duration-300" onclick="openModal('create-tour-modal')">
+                <!--button class="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-500 transition duration-300" onclick="openModal('create-tour-modal')">
                     Ajouter une nouvelle visite
-                </button>
+                </button-->
             </div>
 
-            <div class="tour-card bg-white p-6 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-start lg:items-center transition duration-300">
+            <?php
+                foreach($availableVisits as $visit){
+                    $Steps = extract_rows(request("SELECT titreetape FROM `etapesvisite` WHERE id_visite = ? ORDER BY ordreetape ASC;", "i", [$visit['id']]));
+                    $stepsString = "";
+                    foreach($Steps as $step) $stepsString .= $step['titreetape'] . " ->";
+                    $stepsString = substr($stepsString, 0, -2);
+                    echo "
+                        <div class='bg-white p-6 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-start lg:items-center transition duration-300'>
+                            <div class='lg:w-3/5 mb-4 lg:mb-0'>
+                                <h3 class='text-2xl font-bold text-orange-500 mb-1'>{$visit['titre']}</h3>
+                                <p class='text-sm text-gray-400 mb-2'>Guide: {$visit['nom']} | Langue: {$visit['langue']}</p>
+                                <div class='flex items-center space-x-4 text-gray-700 text-sm font-medium'>
+                                    <span>📅 {$visit['dateheure']}</span>
+                                    <span>⏱️ {$visit['duree']}</span>
+                                    <span>👥 Capacité: {$visit['capacite_max']}</span>
+                                </div>
+                                <div class='mt-3'>
+                                    <span class='font-semibold text-gray-800'>Parcours:</span>
+                                    <span class='text-sm text-gray-600'>{$stepsString}.</span>
+                                </div>
+                            </div>
 
-                <div class="lg:w-3/5 mb-4 lg:mb-0">
-                    <h3 class="text-2xl font-bold text-orange-500 mb-1">Safari dans la Savane Kenyane</h3>
-                    <p class="text-sm text-gray-300 mb-2">Guide: **Aïcha M.** | Langue: Français</p>
-                    <div class="flex items-center space-x-4 text-gray-700 text-sm font-medium">
-                        <span>📅 22 Déc. 2025 à 10:00</span>
-                        <span>⏱️ 1h30</span>
-                        <span>👥 Capacité: 12/25 (Restantes: 13)</span>
-                    </div>
-                    <div class="mt-3">
-                        <span class="font-semibold text-gray-800">Parcours:</span>
-                        <span class="text-sm text-gray-600">Lion de l'Atlas → Éléphants → Girafe Massai.</span>
-                    </div>
-                </div>
+                            <div class='lg:w-1/5 flex flex-col items-start lg:items-end'>
+                                <span class='text-3xl font-extrabold text-orange-500'>{$visit['prix']}€</span>
+                                <button
+                                    class='mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-500 transition duration-300'
+                                    onclick='showBookingModal(1, 'Safari Kenyane', 10)'>
+                                    Réserver
+                                </button>
+                            </div>
+                        </div>
+                    ";
+                }
 
-                <div class="lg:w-1/5 flex flex-col items-start lg:items-end">
-                    <span class="text-3xl font-extrabold text-orange-500">10€</span>
-                    <button
-                        class="mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-500 transition duration-300"
-                        onclick="showBookingModal(1, 'Safari Kenyane', 10)">
-                        Réserver
-                    </button>
-                    <button class="mt-1 text-xs text-gray-500 hover:text-orange-500 transition duration-300"
-                        onclick="showComments(1)">
-                        Voir les 4 commentaires
-                    </button>
-                </div>
-            </div>
+                foreach($reservedVisits as $visit){
+                    $Steps = extract_rows(request("SELECT titreetape FROM `etapesvisite` WHERE id_visite = ? ORDER BY ordreetape ASC;", "i", [$visit['id']]));
+                    $stepsString = "";
+                    foreach($Steps as $step) $stepsString .= $step['titreetape'] . " ->";
+                    $stepsString = substr($stepsString, 0, -2);
 
-            <div
-                class="tour-card bg-gray-200 p-6 rounded-lg shadow-inner flex flex-col lg:flex-row justify-between items-start lg:items-center opacity-70">
+                    echo "
+                        <div class='bg-gray-200 p-6 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-start lg:items-center transition duration-300'>
+                            <div class='lg:w-3/5 mb-4 lg:mb-0'>
+                                <h3 class='text-2xl font-bold text-orange-500 mb-1'>{$visit['titre']}</h3>
+                                <p class='text-sm text-gray-700 mb-2'>Guide: {$visit['nom']} | Langue: {$visit['langue']}</p>
+                                <div class='flex items-center space-x-4 text-gray-700 text-sm font-medium'>
+                                    <span>📅 {$visit['dateheure']}</span>
+                                    <span>⏱️ {$visit['duree']}</span>
+                                    <span>👥 Capacité: {$visit['capacite_max']}</span>
+                                </div>
+                                <div class='mt-3'>
+                                    <span class='font-semibold text-gray-800'>Parcours:</span>
+                                    <span class='text-sm text-gray-700'>{$stepsString}.</span>
+                                </div>
+                            </div>
 
-                <div class="lg:w-3/5 mb-4 lg:mb-0">
-                    <h3 class="text-2xl font-bold text-gray-700 mb-1">Secrets de la Forêt Tropicale</h3>
-                    <p class="text-sm text-gray-500 mb-2">Guide: **Omar T.** | Langue: Anglais</p>
-                    <div class="flex items-center space-x-4 text-gray-700 text-sm font-medium">
+                            <div class='lg:w-1/5 flex flex-col items-start lg:items-end'>
+                                <span class='text-3xl font-extrabold text-orange-500'>{$visit['prix']}€</span>
+                                <div class='mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold'>
+                                    Réservée déja
+                                </div>
+                            </div>
+                        </div>
+                    ";
+                }
+            ?>
+
+            <!--div class='bg-gray-200 p-6 rounded-lg shadow-inner flex flex-col lg:flex-row justify-between items-start lg:items-center opacity-70'>
+
+                <div class='lg:w-3/5 mb-4 lg:mb-0'>
+                    <h3 class='text-2xl font-bold text-gray-700 mb-1'>Secrets de la Forêt Tropicale</h3>
+                    <p class='text-sm text-gray-500 mb-2'>Guide: **Omar T.** | Langue: Anglais</p>
+                    <div class='flex items-center space-x-4 text-gray-700 text-sm font-medium'>
                         <span>✅ Terminée le: 10 Nov. 2025</span>
                         <span>⏱️ 1h00</span>
                     </div>
-                    <div class="mt-3">
-                        <span class="font-semibold text-gray-800">Parcours:</span>
-                        <span class="text-sm text-gray-600">Gorilles → Chimpanzés → Léopards.</span>
+                    <div class='mt-3'>
+                        <span class='font-semibold text-gray-800'>Parcours:</span>
+                        <span class='text-sm text-gray-600'>Gorilles → Chimpanzés → Léopards.</span>
                     </div>
                 </div>
 
-                <div class="lg:w-1/5 flex flex-col items-start lg:items-end">
-                    <div class="text-2xl font-bold text-orange-600 mb-1">
+                <div class='lg:w-1/5 flex flex-col items-start lg:items-end'>
+                    <div class='text-2xl font-bold text-orange-600 mb-1'>
                         Note: 4.5/5
                     </div>
                     <button
-                        class="mt-2 bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300"
-                        onclick="showCommentModal(2, 'Secrets de la Forêt Tropicale')">
+                        class='mt-2 bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300'
+                        onclick='showCommentModal(2, 'Secrets de la Forêt Tropicale')'>
                         💬 Laisser un commentaire
                     </button>
+                    <button class='mt-1 text-xs text-gray-500 hover:text-orange-500 transition duration-300'>
+                        Voir les 4 commentaires
+                    </button>
                 </div>
-            </div>
+            </div-->
 
-            <div
-                class="tour-card bg-white p-6 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-start lg:items-center opacity-90">
+            <!--div class="bg-white p-6 rounded-lg shadow-md flex flex-col lg:flex-row justify-between items-start lg:items-center opacity-90">
 
                 <div class="lg:w-3/5 mb-4 lg:mb-0">
                     <h3 class="text-2xl font-bold text-orange-500 mb-1">Le Maroc Sauvage : Des Côtes aux Déserts</h3>
@@ -120,7 +161,7 @@ include("header.php");
                         Complet
                     </button>
                 </div>
-            </div>
+            </div-->
 
         </section>
 
