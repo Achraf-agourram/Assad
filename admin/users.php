@@ -16,9 +16,24 @@ function show_users_page(){
     $actifAccountsList = extract_rows(request("SELECT id, nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE statut_compte AND (role != 'guide' OR (role = 'guide' AND role_approuve)) AND role != 'admin';", null, null));
     $inactifAccountsList = extract_rows(request("SELECT id, nom, email, role, statut_compte AS statut, role_approuve AS approuve FROM `utilisateurs` WHERE !statut_compte;", null, null));
 
+    echo '
+        <!DOCTYPE html>
+        <html lang="fr">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Admin</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gray-100 font-sans">
+                <div class="flex min-h-screen">
+        ';
+
     leftsidemenu();
     echo '<form method="POST" class="flex-1 p-8">';
     title("Gestion des utilisateurs");
+
     echo '
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -165,7 +180,7 @@ if(isset($_POST['logout'])){
     exit(); 
 }
 
-if(checkAccess()){
+if(checkAccess('admin')){
     actions();
     show_users_page();
 }
