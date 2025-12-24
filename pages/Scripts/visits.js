@@ -21,10 +21,8 @@ function closeModal(modalId) {
 }
 
 
-function showBookingModal(tourId, title, price) {
-    document.getElementById('booking-tour-id').value = tourId;
-    document.getElementById('booking-tour-title').textContent = title;
-    document.getElementById('booking-tour-price').textContent = price;
+function showBookingModal(tourId, price) {
+    document.getElementById('reservationBtn').value = tourId;
 
     const nbPersonnesInput = document.getElementById('nb_personnes');
     const totalPriceSpan = document.getElementById('total-price');

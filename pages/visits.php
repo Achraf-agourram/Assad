@@ -11,6 +11,20 @@ if(isset($_SESSION['loggedAccount'])){
 
 function actions(){
     global $availableVisits, $reservedVisits, $reservedOutDatedVisits, $outdatedVisits;
+
+    if(isset($_POST['addComment'])){
+        request("INSERT INTO commentaires (note, texte, id_visite, id_utilisateur) VALUES (?, ?, ?, ?);", "isii", [$_POST['note'], $_POST['commentaire'], $_POST['addComment'], $_SESSION['loggedAccount']]);
+        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Commentaire ajouté</div>';
+    }
+    if(isset($_POST['showComment'])){
+        $comments = extract_rows(request("SELECT note, nom, texte, date_commentaire FROM commentaires JOIN utilisateurs ON id_utilisateur = utilisateurs.id WHERE id_visite = ?;", "i", [$_POST['showComment']]));
+        show_comments($comments);
+    }
+    if(isset($_POST['reservation'])){
+        request("INSERT INTO reservations (nbpersonnes, id_visite, id_utilisateur) VALUES (?, ?, ?);", "iii", [$_POST['nbpersonne'], $_POST['reservation'], $_SESSION['loggedAccount']]);
+        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Reservation confirmé</div>';
+    }
+    
     if(isset($_GET['search'])){
         $visitName = "%{$_GET['visitToSearch']}%";
 
@@ -23,15 +37,6 @@ function actions(){
         $reservedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure >= NOW();", "i", [$_SESSION['loggedAccount']]));
         $reservedOutDatedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure <= NOW();", "i", [$_SESSION['loggedAccount']]));
         $outdatedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE NOT EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure <= NOW();", "i", [$_SESSION['loggedAccount']]));
-    }
-
-    if(isset($_POST['addComment'])){
-        request("INSERT INTO commentaires (note, texte, id_visite, id_utilisateur) VALUES (?, ?, ?, ?);", "isii", [$_POST['note'], $_POST['commentaire'], $_POST['addComment'], $_SESSION['loggedAccount']]);
-        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Commentaire ajouté</div>';
-    }
-    if(isset($_POST['showComment'])){
-        $comments = extract_rows(request("SELECT note, nom, texte, date_commentaire FROM commentaires JOIN utilisateurs ON id_utilisateur = utilisateurs.id WHERE id_visite = ?;", "i", [$_POST['showComment']]));
-        show_comments($comments);
     }
 }
 
@@ -84,7 +89,6 @@ function show_comments($comments){
     }else{
         echo "<h1 class='text-gray-600 flex justify-center'>Il n'ya aucun commentaire pour le moment</h1>";
     }
-    
 
     echo "
                     </div>
@@ -163,7 +167,7 @@ function show_visits_page(){
 
                 <div class='lg:w-1/5 flex flex-col items-start lg:items-end'>
                     <span class='text-3xl font-extrabold text-orange-500'>{$visit['prix']}€</span>
-                    <button class='mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-500 transition duration-300'>
+                    <button class='mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-500 transition duration-300' onclick='showBookingModal({$visit['id']}, {$visit['prix']})'>
                         Réserver
                     </button>
                 </div>
@@ -290,17 +294,12 @@ function show_visits_page(){
         <div id="booking-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
             <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg">
                 <h3 class="text-2xl font-bold text-orange-700 mb-4">Réservation : <span id="booking-tour-title"></span></h3>
-                <p class="text-sm text-gray-600 mb-4">Prix unitaire: <span id="booking-tour-price"
-                        class="font-bold"></span>€</p>
-                <form id="form-booking">
-                    <input type="hidden" id="booking-tour-id">
+                <form id="form-booking" method="POST">
                     <div class="mb-4">
                         <p class="block text-gray-700 text-sm font-bold mb-2">Nombre de
                             personnes</p>
-                        <input type="number" id="nb_personnes" min="1" max="10" value="1"
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500"
+                        <input type="number" id="nb_personnes" name="nbpersonne" min="1" max="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500"
                             required>
-                        <p class="text-xs text-gray-500 mt-1">Capacité restante: 13 places.</p>
                     </div>
 
                     <div class="text-xl font-bold mb-6">
@@ -308,11 +307,10 @@ function show_visits_page(){
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <button type="submit"
-                            class="bg-orange-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        <button id="reservationBtn" name="reservation" type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition duration-300">
                             Confirmer la Réservation
                         </button>
-                        <button type="button" onclick="closeModal("booking-modal")"
+                        <button type="button" onclick="closeModal(&quot;booking-modal&quot;)"
                             class="text-sm text-gray-500 hover:text-gray-800">
                             Annuler
                         </button>
