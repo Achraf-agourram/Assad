@@ -35,7 +35,7 @@ function showBookingModal(tourId, title, price) {
 }
 
 function showCommentModal(tourId, title) {
-    document.getElementById('comment-tour-id').value = tourId;
+    document.getElementById('commentBtn').value = tourId;
     document.getElementById('comment-tour-title').textContent = title;
 
     openModal('comment-modal');

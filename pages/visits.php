@@ -82,9 +82,7 @@ function show_visits_page(){
 
                 <div class='lg:w-1/5 flex flex-col items-start lg:items-end'>
                     <span class='text-3xl font-extrabold text-orange-500'>{$visit['prix']}€</span>
-                    <button
-                        class='mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-500 transition duration-300'
-                        onclick='showBookingModal(1, 'Safari Kenyane', 10)'>
+                    <button class='mt-2 bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-500 transition duration-300'>
                         Réserver
                     </button>
                 </div>
@@ -155,7 +153,7 @@ function show_visits_page(){
                     </button>
                     <button
                         class='mt-2 bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300'
-                        onclick='showCommentModal(2, 'Secrets de la Forêt Tropicale')'>
+                        onclick='showCommentModal({$visit['id']}, " . json_encode($visit['titre']) . ")'>
                         💬 Laisser un commentaire
                     </button>
                 </div>
@@ -236,12 +234,10 @@ function show_visits_page(){
             </div>
         </div>
 
-        <div id="comment-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
+        <div id="comment-modal" class="fixed flex inset-0 bg-gray-600 bg-opacity-75 items-center hidden justify-center z-50">
             <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg">
                 <h3 class="text-2xl font-bold text-orange-700 mb-4">Évaluer : <span id="comment-tour-title"></span></h3>
-                <form id="form-comment">
-                    <input type="hidden" id="comment-tour-id">
-
+                <form>
                     <div class="mb-4">
                         <label for="note" class="block text-gray-700 text-sm font-bold mb-2">Note sur 5 (⭐)</label>
                         <select id="note"
@@ -264,12 +260,10 @@ function show_visits_page(){
                     </div>
 
                     <div class="flex items-center justify-between">
-                        <button type="submit"
-                            class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                        <button id="commentBtn" name="addComment" type="submit" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition duration-300">
                             Soumettre
                         </button>
-                        <button type="button" onclick="closeModal("comment-modal")"
-                            class="text-sm text-gray-500 hover:text-gray-800">
+                        <button type="button" onclick="closeModal(&quot;comment-modal&quot;)" class="text-sm text-gray-500 hover:text-gray-800">
                             Annuler
                         </button>
                     </div>
