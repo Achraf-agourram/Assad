@@ -74,10 +74,10 @@
         ';
     }
 
-    function checkAccess($role){
+    function checkAccess($key, $value){
         if(isset($_SESSION['loggedAccount'])){
             $connectedUser = extract_rows(request("SELECT * FROM utilisateurs WHERE id = ?;", "i", [$_SESSION['loggedAccount']]))[0];
-            if($connectedUser['role'] == $role) return true;
+            if($connectedUser[$key] == $value) return true;
         }
         show_unavailable_page();
     }

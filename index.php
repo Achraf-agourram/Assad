@@ -1,9 +1,10 @@
 <?php
 session_start();
+include("admin/admin.php");
 include("database.php");
-include("pages/header.php");
-$connectedUser = null;
 
+if(isset($_SESSION['loggedAccount'])) if(!checkAccess('statut_compte', 1)) return 0;
+include("pages/header.php");
 ?>
 
 <!DOCTYPE html>
@@ -90,4 +91,3 @@ $connectedUser = null;
     </div>
 </body>
 </html>
-<?php $database->close(); ?>

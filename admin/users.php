@@ -180,7 +180,7 @@ if(isset($_POST['logout'])){
     exit(); 
 }
 
-if(checkAccess('admin')){
+if(checkAccess('role', 'admin')){
     actions();
     show_users_page();
 }

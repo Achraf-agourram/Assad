@@ -1,10 +1,11 @@
 <?php
 session_start();
+include("../database.php");
 include("../admin/admin.php");
 
 if(isset($_SESSION['loggedAccount'])){
+    if(!checkAccess('statut_compte', 1)) return 0;
     include("header.php");
-    include("../database.php");
     actions();
     show_visits_page();
 }else show_unavailable_page();
@@ -24,7 +25,7 @@ function actions(){
         request("INSERT INTO reservations (nbpersonnes, id_visite, id_utilisateur) VALUES (?, ?, ?);", "iii", [$_POST['nbpersonne'], $_POST['reservation'], $_SESSION['loggedAccount']]);
         echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Reservation confirmé</div>';
     }
-    
+
     if(isset($_GET['search'])){
         $visitName = "%{$_GET['visitToSearch']}%";
 

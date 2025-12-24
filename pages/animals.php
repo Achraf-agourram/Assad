@@ -1,8 +1,11 @@
 <?php
 session_start();
 include("../database.php");
+include("../admin/admin.php");
+
+if(isset($_SESSION['loggedAccount'])) if(!checkAccess('statut_compte', 1)) return 0;
+
 include("header.php");
-$connectedUser = null;
 $animals = extract_rows(request("SELECT nom, espece, alimentation, image, paysorigine, descriptioncourte, nb_consultations, habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null));
 $habitatsToFilter = extract_rows(request("SELECT DISTINCT habitats.h_name FROM `animaux` JOIN habitats ON animaux.id_habitat = habitats.id;", null, null));
 $countriesToFilter = extract_rows(request("SELECT DISTINCT paysorigine FROM `animaux`;", null, null));
