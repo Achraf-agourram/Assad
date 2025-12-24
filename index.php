@@ -30,26 +30,6 @@ $connectedUser = null;
             </div>
         </section>
 
-        <!--section id="visites" class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b-2 border-orange-600 pb-2">📅 Nos Prochaines Visites Virtuelles</h2>
-            
-            <div id="tour-list" class="space-y-6">
-                <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-1">Safari dans la Corne de l'Afrique</h3>
-                        <p class="text-sm text-gray-600 mb-2">Guide: Sarah K. | Langue: Français</p>
-                        <p class="text-md font-medium text-gray-700">Date: 20 Déc. 2025 à 14:00 (Durée: 1h30)</p>
-                        <p class="text-sm text-gray-500 mt-1">Places restantes : 15/30</p>
-                    </div>
-                    <div class="mt-4 md:mt-0 flex items-center space-x-4">
-                        <span class="text-2xl font-extrabold text-orange-600">10€</span>
-                        <button class="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300" onclick="showBookingModal()">
-                            Réserver
-                        </button>
-                    </div>
-                </div>
-                </div>
-        </section-->
     </main>
     
     <div id="modal-asaad" class="fixed inset-0 z-[100] hidden overflow-y-auto">

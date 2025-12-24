@@ -24,6 +24,11 @@ function actions(){
         $reservedOutDatedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure <= NOW();", "i", [$_SESSION['loggedAccount']]));
         $outdatedVisits = extract_rows(request("SELECT v.*, utilisateurs.nom FROM visitesguidees v JOIN utilisateurs ON id_guide = utilisateurs.id WHERE NOT EXISTS (SELECT 1 FROM reservations r WHERE r.id_visite = v.id AND r.id_utilisateur = ?) AND dateheure <= NOW();", "i", [$_SESSION['loggedAccount']]));
     }
+
+    if(isset($_POST['addComment'])){
+        request("INSERT INTO commentaires (note, texte, id_visite, id_utilisateur) VALUES (?, ?, ?, ?);", "isii", [$_POST['note'], $_POST['commentaire'], $_POST['addComment'], $_SESSION['loggedAccount']]);
+        echo '<div id="notification" class="bg-green-500" style="position: absolute;top: 0;left: 40%;color: white;padding: 15px;border-radius: 5px;animation: fadeIn 0.4s ease;z-index: 100;">Commentaire ajouté</div>';
+    }
 }
 function show_visits_page(){
     global $availableVisits, $reservedVisits, $reservedOutDatedVisits, $outdatedVisits;
@@ -128,6 +133,8 @@ function show_visits_page(){
         foreach($Steps as $step) $stepsString .= $step['titreetape'] . " ->";
         $stepsString = substr($stepsString, 0, -2);
 
+        $commentsCount = extract_rows(request("SELECT COUNT(*) AS total FROM commentaires WHERE id_visite = ?;", "i", [$visit['id']]))[0];
+
         echo "
             <div class='bg-gray-200 p-6 rounded-lg shadow-inner flex flex-col lg:flex-row justify-between items-start lg:items-center opacity-70'>
 
@@ -145,11 +152,11 @@ function show_visits_page(){
                 </div>
 
                 <div class='lg:w-1/5 flex flex-col items-start lg:items-end'>
-                    <div class='text-2xl font-bold text-orange-600 mb-1'>
+                    <div name class='text-2xl font-bold text-orange-600 mb-1'>
                         Note: 4.5/5
                     </div>
                     <button class='mt-1 text-xs text-gray-500 hover:text-orange-500 transition duration-300'>
-                        Voir les 4 commentaires
+                        Voir les {$commentsCount['total']} commentaires
                     </button>
                     <button
                         class='mt-2 bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-700 transition duration-300'
@@ -167,6 +174,8 @@ function show_visits_page(){
         foreach($Steps as $step) $stepsString .= $step['titreetape'] . " ->";
         $stepsString = substr($stepsString, 0, -2);
 
+        $commentsCount = extract_rows(request("SELECT COUNT(*) AS total FROM commentaires WHERE id_visite = ?;", "i", [$visit['id']]))[0];
+
         echo "
             <div class='bg-gray-200 p-6 rounded-lg shadow-inner flex flex-col lg:flex-row justify-between items-start lg:items-center opacity-70'>
 
@@ -188,7 +197,7 @@ function show_visits_page(){
                         Note: 4.5/5
                     </div>
                     <button class='mt-1 text-xs text-gray-500 hover:text-orange-500 transition duration-300'>
-                        Voir les 4 commentaires
+                        Voir les {$commentsCount['total']} commentaires
                     </button>
                 </div>
             </div>
@@ -208,8 +217,8 @@ function show_visits_page(){
                 <form id="form-booking">
                     <input type="hidden" id="booking-tour-id">
                     <div class="mb-4">
-                        <label for="nb_personnes" class="block text-gray-700 text-sm font-bold mb-2">Nombre de
-                            personnes</label>
+                        <p class="block text-gray-700 text-sm font-bold mb-2">Nombre de
+                            personnes</p>
                         <input type="number" id="nb_personnes" min="1" max="10" value="1"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500"
                             required>
@@ -237,13 +246,10 @@ function show_visits_page(){
         <div id="comment-modal" class="fixed flex inset-0 bg-gray-600 bg-opacity-75 items-center hidden justify-center z-50">
             <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg">
                 <h3 class="text-2xl font-bold text-orange-700 mb-4">Évaluer : <span id="comment-tour-title"></span></h3>
-                <form>
+                <form method="POST">
                     <div class="mb-4">
-                        <label for="note" class="block text-gray-700 text-sm font-bold mb-2">Note sur 5 (⭐)</label>
-                        <select id="note"
-                            class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500"
-                            required>
-                            <option value="">-- Choisir une note --</option>
+                        <p class="block text-gray-700 text-sm font-bold mb-2">Note sur 5 (⭐)</p>
+                        <select name="note" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                             <option value="5">5 - Excellent</option>
                             <option value="4">4 - Très bien</option>
                             <option value="3">3 - Moyen</option>
@@ -253,8 +259,8 @@ function show_visits_page(){
                     </div>
 
                     <div class="mb-6">
-                        <label for="texte" class="block text-gray-700 text-sm font-bold mb-2">Votre Commentaire</label>
-                        <textarea id="texte" rows="4" placeholder="Partagez votre expérience..."
+                        <p class="block text-gray-700 text-sm font-bold mb-2">Votre Commentaire</p>
+                        <textarea name="commentaire" rows="4" placeholder="Partagez votre expérience..."
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500"
                             required></textarea>
                     </div>
@@ -277,20 +283,20 @@ function show_visits_page(){
                 
                 <form id="form-create-tour">
                     <div class="mb-4">
-                        <label for="tour-titre" class="block text-gray-700 text-sm font-bold mb-2">Titre de la Visite</label>
+                        <p fo" class="block text-gray-700 text-sm font-bold mb-2">Titre de la Visite</p>
                         <input type="text" id="tour-titre" placeholder="Ex: Safari dans la Savane Kenyane" maxlength="100"
                             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label for="tour-dateheure" class="block text-gray-700 text-sm font-bold mb-2">Date et Heure de Début</label>
+                            <p fo" class="block text-gray-700 text-sm font-bold mb-2">Date et Heure de Début</p>
                             <input type="datetime-local" id="tour-dateheure"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                         </div>
                         
                         <div>
-                            <label for="tour-langue" class="block text-gray-700 text-sm font-bold mb-2">Langue de la Visite</label>
+                            <p fo" class="block text-gray-700 text-sm font-bold mb-2">Langue de la Visite</p>
                             <select id="tour-langue"
                                     class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                                 <option value="fr">Français</option>
@@ -303,19 +309,19 @@ function show_visits_page(){
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div>
-                            <label for="tour-capacite" class="block text-gray-700 text-sm font-bold mb-2">Capacité Max</label>
+                            <p fo" class="block text-gray-700 text-sm font-bold mb-2">Capacité Max</p>
                             <input type="number" id="tour-capacite" min="5" max="100" value="30"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                         </div>
                         
                         <div>
-                            <label for="tour-duree" class="block text-gray-700 text-sm font-bold mb-2">Durée (en minutes)</label>
+                            <p fo" class="block text-gray-700 text-sm font-bold mb-2">Durée (en minutes)</p>
                             <input type="number" id="tour-duree" min="30" max="180" value="90"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                         </div>
 
                         <div>
-                            <label for="tour-prix" class="block text-gray-700 text-sm font-bold mb-2">Prix (€ ou MAD)</label>
+                            <p fo" class="block text-gray-700 text-sm font-bold mb-2">Prix (€ ou MAD)</p>
                             <input type="number" id="tour-prix" min="0" step="0.01" value="10.00"
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:ring-orange-500 focus:border-orange-500" required>
                         </div>

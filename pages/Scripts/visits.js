@@ -1,3 +1,9 @@
+setTimeout(() => {
+    try {
+        notification.style.display = 'none';
+    } catch { }
+}, 2000);
+
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
